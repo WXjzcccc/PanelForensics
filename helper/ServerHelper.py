@@ -37,7 +37,10 @@ class ServerHelper:
         floder = '/'.join(local_path.split('/')[:-1])
         if not os.path.exists(floder):
             os.mkdir(floder)
-        sftp.get(remote_file,local_path)
+        try:
+            sftp.get(remote_file,local_path)
+        except Exception as e:
+            open(local_path,'w').write('')
         sftp.close()
         return os.path.abspath(local_path)
 
