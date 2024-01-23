@@ -23,7 +23,7 @@ class BTPanel:
         self.crontab_name = ['任务名','周期','条件1','时','分','执行文件','添加时间','备份至','执行内容','任务类型','请求URL']
         self.config_sql = 'select webserver,backup_path,sites_path,mysql_root from config'
         self.config_name = ['WEB容器','备份路径','网站路径','MySQL管理员密码']
-        self.backup_sql = 'select name,filename,addtime,ps from backup'
+        self.backup_sql = 'select name1,filename,addtime,ps from backup'
         self.backup_name = ['文件名','文件路径','备份时间','备注']
 
     def set_path(self,path: dict) -> None:
@@ -102,43 +102,67 @@ class BTPanel:
         settings = []
         name = []
         with open(self.admin_path,'r') as fr:
-            settings.append(fr.read().strip())
-            name.append('安全入口')
+            try:
+                settings.append(fr.read().strip())
+                name.append('安全入口')
+            except:
+                settings.append('admin_path.pl提取异常')
+                name.append('Warning')
         with open(self.default_path,'r') as fr:
-            settings.append(fr.read().strip())
-            name.append('默认密码')
+            try:
+                settings.append(fr.read().strip())
+                name.append('默认密码')
+            except:
+                settings.append('default.pl提取异常')
+                name.append('Warning')
         with open(self.limitip_path,'r') as fr:
-            settings.append(fr.read().strip())
-            name.append('限制IP')
+            try:
+                settings.append(fr.read().strip())
+                name.append('限制IP')
+            except:
+                settings.append('limitip.conf提取异常')
+                name.append('Warning')
         with open(self.port_path,'r') as fr:
-            settings.append(fr.read().strip())
-            name.append('访问端口')
+            try:
+                settings.append(fr.read().strip())
+                name.append('访问端口')
+            except:
+                settings.append('port.pl提取异常')
+                name.append('Warning')
         with open(self.basic_auth_path,'r') as fr:
-            data = json.load(fr)
-            settings.append(data['basic_user'])
-            name.append('basic_auth用户名')
-            settings.append(data['basic_pwd'])
-            name.append('basic_auth密码')
-            settings.append(data['open'])
-            name.append('basic_auth开关')
+            try:
+                data = json.load(fr)
+                settings.append(data['basic_user'])
+                name.append('basic_auth用户名')
+                settings.append(data['basic_pwd'])
+                name.append('basic_auth密码')
+                settings.append(data['open'])
+                name.append('basic_auth开关')
+            except:
+                settings.append('basic_auth文件不存在')
+                name.append('Warning')
         with open(self.user_path,'r') as fr:
-            data = json.load(fr)
-            settings.append(data['uid'])
-            name.append('用户ID')
-            settings.append(data['address'])
-            name.append('IP地址')
-            settings.append(data['access_key'])
-            name.append('access_key')
-            settings.append(data['secret_key'])
-            name.append('secret_key')
-            settings.append(data['addtime'])
-            name.append('添加时间')
-            settings.append(data['username'])
-            name.append('用户名')
-            settings.append(data['idc_code'])
-            name.append('idc_code')
-            settings.append(data['ukey'])
-            name.append('ukey')
-            settings.append(data['serverid'])
-            name.append('serverid')
+            try:
+                data = json.load(fr)
+                settings.append(data['uid'])
+                name.append('用户ID')
+                settings.append(data['address'])
+                name.append('IP地址')
+                settings.append(data['access_key'])
+                name.append('access_key')
+                settings.append(data['secret_key'])
+                name.append('secret_key')
+                settings.append(data['addtime'])
+                name.append('添加时间')
+                settings.append(data['username'])
+                name.append('用户名')
+                settings.append(data['idc_code'])
+                name.append('idc_code')
+                settings.append(data['ukey'])
+                name.append('ukey')
+                settings.append(data['serverid'])
+                name.append('serverid')
+            except:
+                settings.append('userInfo提取异常')
+                name.append('Warning')
         return (name,[settings])
