@@ -9,8 +9,8 @@ class BTPanel:
         self.users_name = ['用户名','密码','登录IP','登录时间','邮箱','盐值']
         self.tasks_sql = 'select name,type,addtime,execstr from tasks'
         self.tasks_name = ['任务名','类型','添加时间','内容']
-        self.sites_sql = 'select s.name,path,ps,s.addtime,project_type,project_config,d.name,d.port from sites s left join domain d on d.pid = s.id'
-        self.sites_name = ['网站名称','路径','备注','添加时间','网站类型','服务配置','域名','端口']
+        self.sites_sql = 'select s.name,path,ps,s.addtime,d.name,d.port from sites s left join domain d on d.pid = s.id'
+        self.sites_name = ['网站名称','路径','备注','添加时间','域名','端口']
         self.logs_sql = 'select type,log,addtime,username from logs'
         self.logs_name = ['类型','详情','操作时间','操作人']
         self.ftps_sql = 'select name,password,path,ps,addtime from ftps'
