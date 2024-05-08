@@ -36,7 +36,7 @@ class ServerHelper:
         sftp = self.client.open_sftp()
         floder = '/'.join(local_path.split('/')[:-1])
         if not os.path.exists(floder):
-            os.mkdir(floder)
+            os.makedirs(floder)
         try:
             sftp.get(remote_file,local_path)
         except Exception as e:
@@ -47,6 +47,15 @@ class ServerHelper:
     def detect_bt(self) -> bool:
         cmd1 = 'test -d /www/server/panel && echo "目录存在" || echo "目录不存在"'
         cmd2 = 'test -f /usr/bin/bt && echo "文件存在" || echo "文件不存在"'
+        out1 = self.exec_command(cmd1)
+        out2 = self.exec_command(cmd2)
+        if out1 == '目录存在' and out2 == '文件存在':
+            return True
+        return False
+
+    def detect_bt_version(self) -> bool:
+        cmd1 = 'test -f /www/server/panel/data/div.pl && echo "文件存在" || echo "文件不存在"'
+        cmd2 = 'test -d /www/server/panel/data/db && echo "目录存在" || echo "目录不存在"'
         out1 = self.exec_command(cmd1)
         out2 = self.exec_command(cmd2)
         if out1 == '目录存在' and out2 == '文件存在':
@@ -93,6 +102,32 @@ class ServerHelper:
         dic.update({'userInfo.json':self.get_file('/www/server/panel/data/userInfo.json',f'{target_path}userInfo.json')})
         dic.update({'limitip.conf':self.get_file('/www/server/panel/data/limitip.conf',f'{target_path}limitip.conf')})
         dic.update({'basic_auth.json':self.get_file('/www/server/panel/config/basic_auth.json',f'{target_path}basic_auth.json')})
+        return dic
+
+    def download_bt_new(self) -> dict:
+        date = int(time.time())
+        target_path = f'./tmp/BTPanel/{date}/'
+        dic = {}
+        dic.update({'default.db':self.get_file('/www/server/panel/data/db/default.db',f'{target_path}default.db')})
+        dic.update({'database.db':self.get_file('/www/server/panel/data/db/database.db',f'{target_path}database.db')})
+        dic.update({'backup.db':self.get_file('/www/server/panel/data/db/backup.db',f'{target_path}backup.db')})
+        dic.update({'client_info.db':self.get_file('/www/server/panel/data/db/client_info.db',f'{target_path}client_info.db')})
+        dic.update({'crontab.db':self.get_file('/www/server/panel/data/db/crontab.db',f'{target_path}crontab.db')})
+        dic.update({'docker.db':self.get_file('/www/server/panel/data/db/docker.db',f'{target_path}docker.db')})
+        dic.update({'firewall.db':self.get_file('/www/server/panel/data/db/firewall.db',f'{target_path}firewall.db')})
+        dic.update({'ftp.db':self.get_file('/www/server/panel/data/db/ftp.db',f'{target_path}ftp.db')})
+        dic.update({'log.db':self.get_file('/www/server/panel/data/db/log.db',f'{target_path}log.db')})
+        dic.update({'panel.db':self.get_file('/www/server/panel/data/db/panel.db',f'{target_path}panel.db')})
+        dic.update({'site.db':self.get_file('/www/server/panel/data/db/site.db',f'{target_path}site.db')})
+        dic.update({'ssl_data.db':self.get_file('/www/server/panel/data/db/ssl_data.db',f'{target_path}ssl_data.db')})
+        dic.update({'task.db':self.get_file('/www/server/panel/data/db/task.db',f'{target_path}task.db')})
+        dic.update({'default.pl':self.get_file('/www/server/panel/default.pl',f'{target_path}default.pl')})
+        dic.update({'admin_path.pl':self.get_file('/www/server/panel/data/admin_path.pl',f'{target_path}admin_path.pl')})
+        dic.update({'port.pl':self.get_file('/www/server/panel/data/port.pl',f'{target_path}port.pl')})
+        dic.update({'userInfo.json':self.get_file('/www/server/panel/data/userInfo.json',f'{target_path}userInfo.json')})
+        dic.update({'limitip.conf':self.get_file('/www/server/panel/data/limitip.conf',f'{target_path}limitip.conf')})
+        dic.update({'basic_auth.json':self.get_file('/www/server/panel/config/basic_auth.json',f'{target_path}basic_auth.json')})
+        dic.update({'title.pl':self.get_file('/www/server/panel/config/title.pl',f'{target_path}title.pl')})
         return dic
 
     def download_one(self) -> dict:

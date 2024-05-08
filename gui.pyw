@@ -10,6 +10,7 @@ class GUI:
         self.btPanelData = {}
         self.xpPanelData = {}
         self.flag = ''
+        self.bt_flag = ''
         self.path = {}
 
     def show_details(self,event,data) -> None:
@@ -39,7 +40,12 @@ class GUI:
         self.path = {}
         if panel == 'bt':
             self.flag = 'bt'
-            self.path = serverHelper.download_bt()
+            if serverHelper.detect_bt_version:
+                self.bt_flag = True
+                self.path = serverHelper.download_bt_new()
+            else:
+                self.bt_flag = False
+                self.path = serverHelper.download_bt()
         elif panel == 'one':
             self.flag = 'one'
             self.path = serverHelper.download_one()
@@ -123,7 +129,10 @@ class GUI:
     def get_table_layout(self) -> list:
         if self.flag == 'bt':
             print('done')
-            return self.get_btPanel_layout()
+            if self.bt_flag:
+                pass
+            else:
+                return self.get_btPanel_layout()
         elif self.flag == 'one':
             print('done')
             return self.get_onePanel_layout()
