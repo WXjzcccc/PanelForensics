@@ -1,4 +1,5 @@
 import PySimpleGUI as psg
+from BTPanel.BTPanel2 import BTPanel2
 from OnePanel.OnePanel import OnePanel
 from helper.ServerHelper import ServerHelper
 from BTPanel.BTPanel import BTPanel
@@ -99,6 +100,29 @@ class GUI:
             btPanel_tab_layout.append([psg.Tab(key,[[psg.Table(values=self.btPanelData.get(key)[1],headings=self.btPanelData.get(key)[0],num_rows=20,def_col_width=20,auto_size_columns=False,display_row_numbers=True,justification='center',alternating_row_color='lightblue',text_color='black',vertical_scroll_only=False,bind_return_key=True,key=key)]])])
         return btPanel_tab_layout
     
+    def get_btPanel_layout2(self) -> list:
+        btPanel = BTPanel2()
+        btPanel.set_path(self.path)
+        btPanel.get_div()
+        self.btPanelData.update({'备份记录':btPanel.get_backup()})
+        self.btPanelData.update({'配置':btPanel.decrypt(btPanel.get_config())})
+        self.btPanelData.update({'计划任务':btPanel.get_crontab()})
+        self.btPanelData.update({'数据库':btPanel.decrypt(btPanel.get_databases())})
+        self.btPanelData.update({'远程数据库':btPanel.decrypt(btPanel.get_databases_server())})
+        self.btPanelData.update({'防火墙':btPanel.get_firewall()})
+        self.btPanelData.update({'防火墙-ip':btPanel.get_firewall_ip()})
+        self.btPanelData.update({'防火墙-端口转发':btPanel.get_firewall_trans()})
+        self.btPanelData.update({'FTP服务':btPanel.decrypt(btPanel.get_ftps())})
+        self.btPanelData.update({'操作日志':btPanel.get_logs()})
+        self.btPanelData.update({'网站':btPanel.get_sites()})
+        self.btPanelData.update({'任务':btPanel.get_tasks()})
+        self.btPanelData.update({'面板用户':btPanel.decrypt(btPanel.get_users())})
+        self.btPanelData.update({'面板配置':btPanel.get_settings()})
+        btPanel_tab_layout = []
+        for key in self.btPanelData.keys():
+            btPanel_tab_layout.append([psg.Tab(key,[[psg.Table(values=self.btPanelData.get(key)[1],headings=self.btPanelData.get(key)[0],num_rows=20,def_col_width=20,auto_size_columns=False,display_row_numbers=True,justification='center',alternating_row_color='lightblue',text_color='black',vertical_scroll_only=False,bind_return_key=True,key=key)]])])
+        return btPanel_tab_layout
+
     def get_xpPanel_layout(self) -> list:
         xpPanel = XpPanel()
         xpPanel.set_path(self.path)
@@ -130,7 +154,7 @@ class GUI:
         if self.flag == 'bt':
             print('done')
             if self.bt_flag:
-                pass
+                return self.get_btPanel_layout2()
             else:
                 return self.get_btPanel_layout()
         elif self.flag == 'one':
@@ -157,10 +181,10 @@ if __name__ == '__main__':
 """
     layout = [
     [psg.Column([
-        [psg.Text('Host:\t'),psg.InputText('192.168.160.131',size=(15),key='host')],
+        [psg.Text('Host:\t'),psg.InputText('192.168.8.129',size=(15),key='host')],
         [psg.Text('Port:\t'),psg.InputText(22,size=(15),key='port')],
         [psg.Text('用户名:\t'),psg.InputText('root',size=(15),key='username')],
-        [psg.Text('密码:\t'),psg.InputText('root',size=(15),password_char='*',key='password')],
+        [psg.Text('密码:\t'),psg.InputText('666666',size=(15),password_char='*',key='password')],
         [psg.Button('梭哈!')],
         ]),psg.Column([
             [psg.Stretch(),psg.Text(slogan,font=('Courier New',9),text_color='lightgreen'),psg.Stretch()],

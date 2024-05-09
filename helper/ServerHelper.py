@@ -127,7 +127,8 @@ class ServerHelper:
         dic.update({'userInfo.json':self.get_file('/www/server/panel/data/userInfo.json',f'{target_path}userInfo.json')})
         dic.update({'limitip.conf':self.get_file('/www/server/panel/data/limitip.conf',f'{target_path}limitip.conf')})
         dic.update({'basic_auth.json':self.get_file('/www/server/panel/config/basic_auth.json',f'{target_path}basic_auth.json')})
-        dic.update({'title.pl':self.get_file('/www/server/panel/config/title.pl',f'{target_path}title.pl')})
+        dic.update({'title.pl':self.get_file('/www/server/panel/data/title.pl',f'{target_path}title.pl')})
+        dic.update({'memo.txt':self.get_file('/www/server/panel/data/memo.txt',f'{target_path}memo.txt')})
         return dic
 
     def download_one(self) -> dict:

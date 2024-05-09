@@ -7,6 +7,7 @@ import os
 class DecHelper:
     def __init__(self) -> None:
         self.key = ''
+        self.bt_div = ''
 
     def onepanel_password_decrypt(self,key: str,b64_pwd: str) -> str:
         """
@@ -22,6 +23,31 @@ class DecHelper:
         password = unpad(decrypted_data, AES.block_size)
         return password.decode('utf-8')
     
+    def decrypt_bt_div(self,div: str) -> str:
+        """
+        @div:      需要解密的内容，Base64格式
+        """
+        key = 'Z2B87NEAS2BkxTrh'
+        iv = 'WwadH66EGWpeeTT6'
+        byte_div = b64decode(div)
+        aes = AES.new(key.encode('utf-8'),AES.MODE_CBC,iv.encode('utf-8'))
+        decrypted_data = aes.decrypt(byte_div)
+        dec_div = unpad(decrypted_data, AES.block_size)
+        self.bt_div = dec_div.decode('utf-8')
+        return dec_div.decode('utf-8')
+    
+    def decrypt_bt(self,bt_str: str) -> str:
+        """
+        @bt_str:   需要解密的内容，Base64格式
+        """
+        key = '3P+_lN3+jPW6Kgt#'
+        iv = self.bt_div
+        byte_bt = b64decode(bt_str)
+        aes = AES.new(key.encode('utf-8'),AES.MODE_CBC,iv.encode('utf-8'))
+        decrypted_data = aes.decrypt(byte_bt)
+        dec_bt = unpad(decrypted_data, AES.block_size)
+        return dec_bt.decode('utf-8')
+
     def decrypt_xp_db(self,path: str) -> int:
         """
         @path:      需要解密的数据库路径
