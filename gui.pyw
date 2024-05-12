@@ -1,5 +1,6 @@
 import PySimpleGUI as psg
 from BTPanel.BTPanel2 import BTPanel2
+from BTPanel.BTPanel3 import BTPanel3
 from OnePanel.OnePanel import OnePanel
 from helper.ServerHelper import ServerHelper
 from BTPanel.BTPanel import BTPanel
@@ -11,7 +12,7 @@ class GUI:
         self.btPanelData = {}
         self.xpPanelData = {}
         self.flag = ''
-        self.bt_flag = ''
+        self.bt_flag = 0
         self.path = {}
 
     def show_details(self,event,data) -> None:
@@ -41,11 +42,14 @@ class GUI:
         self.path = {}
         if panel == 'bt':
             self.flag = 'bt'
-            if serverHelper.detect_bt_version:
-                self.bt_flag = True
+            if serverHelper.detect_bt_version() == 1:
+                self.bt_flag = 1
                 self.path = serverHelper.download_bt_new()
+            elif serverHelper.detect_bt_version() == 2:
+                self.bt_flag = 2
+                self.path = serverHelper.download_bt()
             else:
-                self.bt_flag = False
+                self.bt_flag = 0
                 self.path = serverHelper.download_bt()
         elif panel == 'one':
             self.flag = 'one'
@@ -118,6 +122,32 @@ class GUI:
         self.btPanelData.update({'任务':btPanel.get_tasks()})
         self.btPanelData.update({'面板用户':btPanel.decrypt(btPanel.get_users())})
         self.btPanelData.update({'面板配置':btPanel.get_settings()})
+        btPanel.close()
+        btPanel_tab_layout = []
+        for key in self.btPanelData.keys():
+            btPanel_tab_layout.append([psg.Tab(key,[[psg.Table(values=self.btPanelData.get(key)[1],headings=self.btPanelData.get(key)[0],num_rows=20,def_col_width=20,auto_size_columns=False,display_row_numbers=True,justification='center',alternating_row_color='lightblue',text_color='black',vertical_scroll_only=False,bind_return_key=True,key=key)]])])
+        return btPanel_tab_layout
+    
+
+    def get_btPanel_layout3(self) -> list:
+        btPanel = BTPanel3()
+        btPanel.set_path(self.path)
+        btPanel.connect()
+        btPanel.get_div()
+        self.btPanelData.update({'备份记录':btPanel.get_backup()})
+        self.btPanelData.update({'配置':btPanel.decrypt(btPanel.get_config())})
+        self.btPanelData.update({'计划任务':btPanel.get_crontab()})
+        self.btPanelData.update({'数据库':btPanel.decrypt(btPanel.get_databases())})
+        self.btPanelData.update({'远程数据库':btPanel.decrypt(btPanel.get_databases_server())})
+        self.btPanelData.update({'防火墙':btPanel.get_firewall()})
+        self.btPanelData.update({'防火墙-ip':btPanel.get_firewall_ip()})
+        self.btPanelData.update({'防火墙-端口转发':btPanel.get_firewall_trans()})
+        self.btPanelData.update({'FTP服务':btPanel.decrypt(btPanel.get_ftps())})
+        self.btPanelData.update({'操作日志':btPanel.get_logs()})
+        self.btPanelData.update({'网站':btPanel.get_sites()})
+        self.btPanelData.update({'任务':btPanel.get_tasks()})
+        self.btPanelData.update({'面板用户':btPanel.decrypt(btPanel.get_users())})
+        self.btPanelData.update({'面板配置':btPanel.get_settings()})
         btPanel_tab_layout = []
         for key in self.btPanelData.keys():
             btPanel_tab_layout.append([psg.Tab(key,[[psg.Table(values=self.btPanelData.get(key)[1],headings=self.btPanelData.get(key)[0],num_rows=20,def_col_width=20,auto_size_columns=False,display_row_numbers=True,justification='center',alternating_row_color='lightblue',text_color='black',vertical_scroll_only=False,bind_return_key=True,key=key)]])])
@@ -153,8 +183,10 @@ class GUI:
     def get_table_layout(self) -> list:
         if self.flag == 'bt':
             print('done')
-            if self.bt_flag:
+            if self.bt_flag == 1:
                 return self.get_btPanel_layout2()
+            elif self.bt_flag == 2:
+                return self.get_btPanel_layout3()
             else:
                 return self.get_btPanel_layout()
         elif self.flag == 'one':

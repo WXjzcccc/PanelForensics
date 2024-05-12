@@ -53,14 +53,16 @@ class ServerHelper:
             return True
         return False
 
-    def detect_bt_version(self) -> bool:
+    def detect_bt_version(self) -> int:
         cmd1 = 'test -f /www/server/panel/data/div.pl && echo "文件存在" || echo "文件不存在"'
         cmd2 = 'test -d /www/server/panel/data/db && echo "目录存在" || echo "目录不存在"'
         out1 = self.exec_command(cmd1)
         out2 = self.exec_command(cmd2)
         if out1 == '目录存在' and out2 == '文件存在':
-            return True
-        return False
+            return 1
+        if out1 == '文件存在' and out2 == '目录不存在':
+            return 2
+        return 0
 
     def detect_one(self) -> bool:
         cmd1 = 'test -f /usr/bin/1panel && echo "文件存在" || echo "文件不存在"'
@@ -102,6 +104,8 @@ class ServerHelper:
         dic.update({'userInfo.json':self.get_file('/www/server/panel/data/userInfo.json',f'{target_path}userInfo.json')})
         dic.update({'limitip.conf':self.get_file('/www/server/panel/data/limitip.conf',f'{target_path}limitip.conf')})
         dic.update({'basic_auth.json':self.get_file('/www/server/panel/config/basic_auth.json',f'{target_path}basic_auth.json')})
+        dic.update({'title.pl':self.get_file('/www/server/panel/data/title.pl',f'{target_path}title.pl')})
+        dic.update({'memo.txt':self.get_file('/www/server/panel/data/memo.txt',f'{target_path}memo.txt')})
         return dic
 
     def download_bt_new(self) -> dict:
