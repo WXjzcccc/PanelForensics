@@ -122,7 +122,6 @@ class GUI:
         self.btPanelData.update({'任务':btPanel.get_tasks()})
         self.btPanelData.update({'面板用户':btPanel.decrypt(btPanel.get_users())})
         self.btPanelData.update({'面板配置':btPanel.get_settings()})
-        btPanel.close()
         btPanel_tab_layout = []
         for key in self.btPanelData.keys():
             btPanel_tab_layout.append([psg.Tab(key,[[psg.Table(values=self.btPanelData.get(key)[1],headings=self.btPanelData.get(key)[0],num_rows=20,def_col_width=20,auto_size_columns=False,display_row_numbers=True,justification='center',alternating_row_color='lightblue',text_color='black',vertical_scroll_only=False,bind_return_key=True,key=key)]])])
@@ -148,6 +147,7 @@ class GUI:
         self.btPanelData.update({'任务':btPanel.get_tasks()})
         self.btPanelData.update({'面板用户':btPanel.decrypt(btPanel.get_users())})
         self.btPanelData.update({'面板配置':btPanel.get_settings()})
+        btPanel.close()
         btPanel_tab_layout = []
         for key in self.btPanelData.keys():
             btPanel_tab_layout.append([psg.Tab(key,[[psg.Table(values=self.btPanelData.get(key)[1],headings=self.btPanelData.get(key)[0],num_rows=20,def_col_width=20,auto_size_columns=False,display_row_numbers=True,justification='center',alternating_row_color='lightblue',text_color='black',vertical_scroll_only=False,bind_return_key=True,key=key)]])])
