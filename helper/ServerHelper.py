@@ -58,7 +58,7 @@ class ServerHelper:
         cmd2 = 'test -d /www/server/panel/data/db && echo "目录存在" || echo "目录不存在"'
         out1 = self.exec_command(cmd1)
         out2 = self.exec_command(cmd2)
-        if out1 == '目录存在' and out2 == '文件存在':
+        if out1 == '文件存在' and out2 == '目录存在':
             return 1
         if out1 == '文件存在' and out2 == '目录不存在':
             return 2
