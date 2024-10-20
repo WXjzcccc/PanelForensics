@@ -95,6 +95,7 @@ class GUI:
         self.btPanelData.update({'FTP服务':btPanel.get_ftps()})
         self.btPanelData.update({'操作日志':btPanel.get_logs()})
         self.btPanelData.update({'网站':btPanel.get_sites()})
+        self.btPanelData.update({'历史命令':btPanel.get_history()})
         self.btPanelData.update({'任务':btPanel.get_tasks()})
         self.btPanelData.update({'面板用户':btPanel.get_users()})
         self.btPanelData.update({'面板配置':btPanel.get_settings()})
@@ -103,7 +104,7 @@ class GUI:
         for key in self.btPanelData.keys():
             btPanel_tab_layout.append([psg.Tab(key,[[psg.Table(values=self.btPanelData.get(key)[1],headings=self.btPanelData.get(key)[0],num_rows=20,def_col_width=20,auto_size_columns=False,display_row_numbers=True,justification='center',alternating_row_color='lightblue',text_color='black',vertical_scroll_only=False,bind_return_key=True,key=key)]])])
         return btPanel_tab_layout
-    
+
     def get_btPanel_layout2(self) -> list:
         btPanel = BTPanel2()
         btPanel.set_path(self.path)
@@ -118,6 +119,7 @@ class GUI:
         self.btPanelData.update({'防火墙-端口转发':btPanel.get_firewall_trans()})
         self.btPanelData.update({'FTP服务':btPanel.decrypt(btPanel.get_ftps())})
         self.btPanelData.update({'操作日志':btPanel.get_logs()})
+        self.btPanelData.update({'历史命令': btPanel.get_history()})
         self.btPanelData.update({'网站':btPanel.get_sites()})
         self.btPanelData.update({'任务':btPanel.get_tasks()})
         self.btPanelData.update({'面板用户':btPanel.decrypt(btPanel.get_users())})
@@ -126,7 +128,7 @@ class GUI:
         for key in self.btPanelData.keys():
             btPanel_tab_layout.append([psg.Tab(key,[[psg.Table(values=self.btPanelData.get(key)[1],headings=self.btPanelData.get(key)[0],num_rows=20,def_col_width=20,auto_size_columns=False,display_row_numbers=True,justification='center',alternating_row_color='lightblue',text_color='black',vertical_scroll_only=False,bind_return_key=True,key=key)]])])
         return btPanel_tab_layout
-    
+
 
     def get_btPanel_layout3(self) -> list:
         btPanel = BTPanel3()
@@ -143,6 +145,7 @@ class GUI:
         self.btPanelData.update({'防火墙-端口转发':btPanel.get_firewall_trans()})
         self.btPanelData.update({'FTP服务':btPanel.decrypt(btPanel.get_ftps())})
         self.btPanelData.update({'操作日志':btPanel.get_logs()})
+        self.btPanelData.update({'历史命令': btPanel.get_history()})
         self.btPanelData.update({'网站':btPanel.get_sites()})
         self.btPanelData.update({'任务':btPanel.get_tasks()})
         self.btPanelData.update({'面板用户':btPanel.decrypt(btPanel.get_users())})
@@ -213,7 +216,7 @@ if __name__ == '__main__':
 """
     layout = [
     [psg.Column([
-        [psg.Text('Host:\t'),psg.InputText('192.168.8.129',size=(15),key='host')],
+        [psg.Text('Host:\t'),psg.InputText('192.168.71.140',size=(15),key='host')],
         [psg.Text('Port:\t'),psg.InputText(22,size=(15),key='port')],
         [psg.Text('用户名:\t'),psg.InputText('root',size=(15),key='username')],
         [psg.Text('密码:\t'),psg.InputText('666666',size=(15),password_char='*',key='password')],

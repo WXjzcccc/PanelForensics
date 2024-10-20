@@ -1,5 +1,6 @@
 from helper.DBHelper import DBHelper
 import json
+import ast
 
 class BTPanel:
     def __init__(self) -> None:
@@ -35,6 +36,10 @@ class BTPanel:
         self.default_path = path.get('default.pl')
         self.port_path = path.get('port.pl')
         self.user_path = path.get('userInfo.json')
+        self.history_path = []
+        for key in path:
+            if key.endswith('_history.pl'):
+                self.history_path.append(path.get(key))
         self.limitip_path = ''
         self.basic_auth_path = ''
         if 'limitip.conf' in path.keys():
@@ -47,17 +52,30 @@ class BTPanel:
 
     def close(self) -> None:
         self.conn.close()
-    
+
     def get_users(self) -> tuple:
         users = self.conn.select(self.users_sql)
         users = [list(t) for t in users]
         return (self.users_name,users)
-    
+
     def get_tasks(self) -> tuple:
         tasks = self.conn.select(self.tasks_sql)
         tasks = [list(t) for t in tasks]
         return (self.tasks_name,tasks)
-    
+
+    def get_history(self) -> tuple:
+        import datetime
+        history = []
+        for history_path in self.history_path:
+            with open(history_path,'r',encoding='utf-8') as f:
+                data = f.readlines()
+                for line in data:
+                    t = ast.literal_eval(line.strip())
+                    t.extend([history_path.split('\\')[-1].split('_')[0]])
+                    t[0] = datetime.datetime.fromtimestamp(int(t[0])).strftime("%Y-%m-%d %H:%M:%S")
+                    history.append(t)
+        return (['时间', '本地IP', '用户', '命令', '连接IP'],history)
+
     def get_sites(self) -> tuple:
         sites = self.conn.select(self.sites_sql)
         sites = [list(t) for t in sites]

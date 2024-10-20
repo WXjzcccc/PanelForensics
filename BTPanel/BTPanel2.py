@@ -2,6 +2,7 @@ from helper.DBHelper import DBHelper
 from helper.DecHelper import DecHelper
 import json
 import datetime
+import ast
 
 class BTPanel2:
     def __init__(self) -> None:
@@ -64,6 +65,10 @@ class BTPanel2:
         self.task_db = path.get('task.db')
         self.admin_path = path.get('admin_path.pl')
         self.default_path = path.get('default.pl')
+        self.history_path = []
+        for key in path:
+            if key.endswith('_history.pl'):
+                self.history_path.append(path.get(key))
         self.port_path = path.get('port.pl')
         self.user_path = path.get('userInfo.json')
         self.limitip_path = ''
@@ -80,7 +85,7 @@ class BTPanel2:
     def connect(self,db: str) -> DBHelper:
         conn = DBHelper(db)
         return conn
-    
+
     def decrypt(self,data: tuple) -> tuple:
         lst = data[1]
         print(lst)
@@ -103,14 +108,27 @@ class BTPanel2:
         users.extend(tmp)
         conn.close()
         return (self.users_name,users)
-    
+
     def get_tasks(self) -> tuple:
         conn = DBHelper(self.task_db)
         tasks = conn.select(self.tasks_sql)
         tasks = [list(t) for t in tasks]
         conn.close()
         return (self.tasks_name,tasks)
-    
+
+    def get_history(self) -> tuple:
+        import datetime
+        history = []
+        for history_path in self.history_path:
+            with open(history_path,'r',encoding='utf-8') as f:
+                data = f.readlines()
+                for line in data:
+                    t = ast.literal_eval(line.strip())
+                    t.extend([history_path.split('\\')[-1].split('_')[0]])
+                    t[0] = datetime.datetime.fromtimestamp(int(t[0])).strftime("%Y-%m-%d %H:%M:%S")
+                    history.append(t)
+        return (['时间', '本地IP', '用户', '命令', '连接IP'],history)
+
     def get_sites(self) -> tuple:
         conn = DBHelper(self.site_db)
         sites = conn.select(self.sites_sql)

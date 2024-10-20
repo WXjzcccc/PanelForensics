@@ -2,6 +2,7 @@ from helper.DBHelper import DBHelper
 from helper.DecHelper import DecHelper
 import json
 import datetime
+import ast
 
 class BTPanel3:
     def __init__(self) -> None:
@@ -46,6 +47,10 @@ class BTPanel3:
         self.user_path = path.get('userInfo.json')
         self.limitip_path = ''
         self.basic_auth_path = ''
+        self.history_path = []
+        for key in path:
+            if key.endswith('_history.pl'):
+                self.history_path.append(path.get(key))
         self.memo_path = ''
         self.title_path = path.get('title.pl')
         if 'memo.txt' in path.keys():
@@ -60,7 +65,7 @@ class BTPanel3:
 
     def close(self) -> None:
         self.conn.close()
-    
+
     def decrypt(self,data: tuple) -> tuple:
         lst = data[1]
         print(data)
@@ -72,6 +77,19 @@ class BTPanel3:
                     dec_data = self.cipher.decrypt_bt(enc_data)
                     lst[i][j] = dec_data
         return (data[0],lst)
+
+    def get_history(self) -> tuple:
+        import datetime
+        history = []
+        for history_path in self.history_path:
+            with open(history_path,'r',encoding='utf-8') as f:
+                data = f.readlines()
+                for line in data:
+                    t = ast.literal_eval(line.strip())
+                    t.extend([history_path.split('\\')[-1].split('_')[0]])
+                    t[0] = datetime.datetime.fromtimestamp(int(t[0])).strftime("%Y-%m-%d %H:%M:%S")
+                    history.append(t)
+        return (['时间', '本地IP', '用户', '命令', '连接IP'],history)
 
     def get_users(self) -> tuple:
         users = self.conn.select(self.users_sql)

@@ -106,6 +106,12 @@ class ServerHelper:
         dic.update({'basic_auth.json':self.get_file('/www/server/panel/config/basic_auth.json',f'{target_path}basic_auth.json')})
         dic.update({'title.pl':self.get_file('/www/server/panel/data/title.pl',f'{target_path}title.pl')})
         dic.update({'memo.txt':self.get_file('/www/server/panel/data/memo.txt',f'{target_path}memo.txt')})
+        out = self.exec_command("find /www/server/panel/config/ssh_info -name history.pl")
+        history = []
+        for line in out.split('\n'):
+            history.append(line)
+            ip = line.split('/')[-2]
+            dic.update({f'{ip}_history.pl':self.get_file(line,f'{target_path}{ip}_history.pl')})
         return dic
 
     def download_bt_new(self) -> dict:
