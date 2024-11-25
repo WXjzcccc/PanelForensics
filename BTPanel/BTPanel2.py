@@ -104,8 +104,13 @@ class BTPanel2:
         conn.close()
         conn = DBHelper(self.default_db)
         tmp = conn.select(self.users_sql2)
-        tmp = [list(t) for t in tmp]
-        users.extend(tmp)
+        # tmp = [list(t).append('') for t in tmp]
+        tmp2 = []
+        for t in tmp:
+            _ = list(t)
+            _.append("")
+            tmp2.append(_)
+        users.extend(tmp2)
         conn.close()
         return (self.users_name,users)
 
@@ -283,7 +288,7 @@ class BTPanel2:
                 name.append('access_key')
                 settings.append(data['secret_key'])
                 name.append('secret_key')
-                settings.append(datetime.datetime.fromtimestamp(data['addtime']))
+                settings.append(str(datetime.datetime.fromtimestamp(data['addtime'])))
                 name.append('添加时间')
                 settings.append(data['username'])
                 name.append('用户名')

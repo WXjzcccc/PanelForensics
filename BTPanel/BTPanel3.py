@@ -243,7 +243,7 @@ class BTPanel3:
                 name.append('access_key')
                 settings.append(data['secret_key'])
                 name.append('secret_key')
-                settings.append(datetime.datetime.fromtimestamp(data['addtime']))
+                settings.append(str(datetime.datetime.fromtimestamp(data['addtime'])))
                 name.append('添加时间')
                 settings.append(data['username'])
                 name.append('用户名')
