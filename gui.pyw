@@ -94,7 +94,6 @@ Author: WXjzc
 1.使用SSH连接到Linux服务器
 2.软件会自动检测宝塔面板、小皮面板和1Panel，并从服务器下载文件进行分析
 3.分析结果以表格形式呈现，分析的内容仅为面板基础内容，不包含数据库、网站的重建与还原
-4.每次取证请重新打开软件
 """
         )
         upper_layout.addWidget(description_widget, 3)  # 右侧占据 3 比例宽度
@@ -242,6 +241,7 @@ Author: WXjzc
         self.onePanelData.update({'Mysql配置':onePanel.get_mysql()})
         self.onePanelData.update({'面板配置':onePanel.get_settings()})
         self.onePanelData.update({'网站':onePanel.get_websites()})
+        self.onePanelData.update({'远程连接':onePanel.get_hosts()})
         onePanel.close()
 
     def get_btPanel_data(self):
@@ -322,7 +322,7 @@ class TextDrawingWidget(QWidget):
 
 if __name__ == "__main__":
     app = QApplication([])
-    apply_stylesheet(app, theme='light_amber.xml')
+    apply_stylesheet(app, theme='dark_amber.xml')
     window = MainWindow()
     window.resize(1200, 800)
     window.show()

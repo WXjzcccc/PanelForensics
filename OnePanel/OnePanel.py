@@ -17,8 +17,8 @@ class OnePanel:
         self.commands_sql = 'select created_at,updated_at,name,command from commands;'
         self.commands_name = ['创建时间','修改时间','名称','命令']
 
-        self.cronjobs_sql = 'select created_at,updated_at,name,type,spec_type,spec,script,website,db_name,url,source_dir,exclusion_rules,keep_local,status,container_name from cronjobs;'
-        self.cronjobs_name = ['创建时间','修改时间','任务名','类型','计划类型','执行周期','脚本','网站名','数据库','URL','源目录','执行规则','是否保存本地','任务状态','容器名称']
+        self.cronjobs_sql = 'select created_at,updated_at,name,type,spec,script,website,db_name,url,source_dir,exclusion_rules,keep_local,status,container_name from cronjobs;'
+        self.cronjobs_name = ['创建时间','修改时间','任务名','类型','执行周期','脚本','网站名','数据库','URL','源目录','执行规则','是否保存本地','任务状态','容器名称']
 
         self.mysql_sql = 'select created_at,updated_at,name,mysql_name,format,username,password,permission from database_mysqls;'
         self.mysql_name = ['创建时间','修改时间','数据库名','类型','字符集','用户名','密码','访问权限']
@@ -37,6 +37,9 @@ class OnePanel:
 
         self.websites_sql = 'select created_at,updated_at,protocol,primary_domain,type,alias,remark,status,expire_date,site_dir from websites'
         self.websites_name = ['创建时间','修改时间','协议','主域名','类型','代号','备注','状态','过期时间','网站根目录']
+
+        self.hosts_sql = 'select created_at,updated_at,name,addr,port,user,password from hosts'
+        self.hosts_name = ['创建时间','修改时间','连接名','地址','端口','用户名','密码']
 
         self.settings_sql = 'select key,value from settings'
 
@@ -103,11 +106,21 @@ class OnePanel:
         websites = self.conn.select(self.websites_sql)
         websites = [list(t) for t in websites]
         return (self.websites_name,websites)
+
+    def get_hosts(self) -> tuple:
+        hosts = self.conn.select(self.hosts_sql)
+        hosts = [list(t) for t in hosts]
+        for i in range(len(hosts)):
+            hosts[i][6] = self.decrypt(hosts[i][6])
+        return (self.hosts_name,hosts)
+
     
     def decrypt(self,text: str) -> str:
         """
         @text:      待解密的密文
         """
+        if text == '':
+            return ''
         cipher = DecHelper()
         return cipher.onepanel_password_decrypt(self.aes_key,text)
     
