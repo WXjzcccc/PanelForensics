@@ -239,6 +239,7 @@ Author: WXjzc
         self.onePanelData.update({'安装应用':onePanel.get_installed_app()})
         self.onePanelData.update({'计划任务执行记录':onePanel.get_job_records()})
         self.onePanelData.update({'Mysql配置':onePanel.get_mysql()})
+        self.onePanelData.update({'Postgresql配置': onePanel.get_postgresql()})
         self.onePanelData.update({'面板配置':onePanel.get_settings()})
         self.onePanelData.update({'网站':onePanel.get_websites()})
         self.onePanelData.update({'远程连接':onePanel.get_hosts()})

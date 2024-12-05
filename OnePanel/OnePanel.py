@@ -23,6 +23,9 @@ class OnePanel:
         self.mysql_sql = 'select created_at,updated_at,name,mysql_name,format,username,password,permission from database_mysqls;'
         self.mysql_name = ['创建时间','修改时间','数据库名','类型','字符集','用户名','密码','访问权限']
 
+        self.postgresql_sql = 'select created_at,updated_at,name,postgresql_name,format,username,password,super_user from database_postgresqls;'
+        self.postgresql_name = ['创建时间', '修改时间', '数据库名', '类型', '字符集', '用户名', '密码', '超级用户']
+
         self.database_sql = 'select created_at,updated_at,name,type,version,address,port,username,password from databases;'
         self.database_name = ['创建时间','修改时间','数据库名','类型','版本','地址','端口','用户名','密码']
 
@@ -79,6 +82,16 @@ class OnePanel:
         for i in range(len(mysql)):
             mysql[i][6] = self.decrypt(mysql[i][6])
         return (self.mysql_name,mysql)
+
+    def get_postgresql(self) -> tuple:
+        try:
+            postgresql = self.conn.select(self.postgresql_sql)
+            postgresql = [list(t) for t in postgresql]
+        except:
+            postgresql = []
+        for i in range(len(postgresql)):
+            postgresql[i][6] = self.decrypt(postgresql[i][6])
+        return (self.postgresql_name,postgresql)
     
     def get_database(self) -> tuple:
         database = self.conn.select(self.database_sql)
