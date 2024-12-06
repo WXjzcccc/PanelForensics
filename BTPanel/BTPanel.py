@@ -24,7 +24,7 @@ class BTPanel:
         self.crontab_name = ['任务名','周期','条件1','时','分','执行文件','添加时间','备份至','执行内容','任务类型','请求URL']
         self.config_sql = 'select webserver,backup_path,sites_path,mysql_root from config'
         self.config_name = ['WEB容器','备份路径','网站路径','MySQL管理员密码']
-        self.backup_sql = 'select name1,filename,addtime,ps from backup'
+        self.backup_sql = 'select name,filename,addtime,ps from backup'
         self.backup_name = ['文件名','文件路径','备份时间','备注']
 
     def set_path(self,path: dict) -> None:
@@ -112,8 +112,11 @@ class BTPanel:
         return (self.config_name,config)
     
     def get_backup(self) -> tuple:
-        backup = self.conn.select(self.backup_sql)
-        backup = [list(t) for t in backup]
+        try:
+            backup = self.conn.select(self.backup_sql)
+            backup = [list(t) for t in backup]
+        except Exception as e:# 不知道某次推送为什么把sql中的name改成了name1，现在用name应该是正常的，保险起见加一个异常处理
+            return (self.backup_name,[[]])
         return (self.backup_name,backup)
 
     def get_settings(self) -> tuple:
