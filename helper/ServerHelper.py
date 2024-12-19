@@ -1,6 +1,7 @@
 import paramiko
 import os
 import time
+import yaml
 
 class ServerHelper:
     def __init__(self,host: str,port: int,username: str,password: str) -> None:
@@ -82,6 +83,15 @@ class ServerHelper:
             return True
         return False
 
+    def detect_mouse(self) -> bool:
+        cmd1 = 'test -f /usr/local/sbin/panel-cli && echo "文件存在" || echo "文件不存在"'
+        cmd2 = 'test -f /usr/local/etc/panel/config.yml && echo "文件存在" || echo "文件不存在"'
+        out1 = self.exec_command(cmd1)
+        out2 = self.exec_command(cmd2)
+        if out1 == '文件存在' and out2 == '文件存在':
+            return True
+        return False
+
     def detect_panel(self) -> str:
         if self.client == None:
             return '连接失败'
@@ -91,6 +101,8 @@ class ServerHelper:
             return 'one'
         if self.detect_xp():
             return 'xp'
+        if self.detect_mouse():
+            return 'mouse'
         return '未找到任何面板'
     
     def download_bt(self) -> dict:
@@ -176,3 +188,24 @@ class ServerHelper:
         except:
             pass
         return dic
+
+    def download_mouse(self) -> dict:
+        date = int(time.time())
+        target_path = f'./tmp/MousePanel/{date}/'
+        dic = {}
+        try:
+            dic.update({'config.yml': self.get_file('/usr/local/etc/panel/config.yml',f'{target_path}config.yml')})
+            root_path = self.getRootPath(f'{target_path}config.yml')
+            dic.update({'app.db': self.get_file(f'{root_path}/panel/storage/app.db',
+                                               f'{target_path}app.db')})
+        except:
+            pass
+        return dic
+
+    def getRootPath(self, path: str) -> str:
+        with open(path, 'r', encoding='utf-8') as f:
+            try:
+                data = yaml.load(f, Loader=yaml.FullLoader)
+                return data['app']['root']
+            except:
+                return '/www'

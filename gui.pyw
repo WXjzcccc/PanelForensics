@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QLabel, QLineEdit, QPushButton, QTabWidget, QTableWidget, QTableWidgetItem, QTextEdit, QMessageBox
 )
 from qt_material import apply_stylesheet
-
+from MousePanel.MousePanel import MousePanel
 from BTPanel.BTPanel import BTPanel
 from BTPanel.BTPanel2 import BTPanel2
 from BTPanel.BTPanel3 import BTPanel3
@@ -31,6 +31,7 @@ class MainWindow(QMainWindow):
         self.onePanelData = {}
         self.btPanelData = {}
         self.xpPanelData = {}
+        self.mousePanelData = {}
         self.setWindowTitle("PanelForensics")
         self.setWindowIcon(QIcon("icon.ico"))
 
@@ -92,7 +93,7 @@ class MainWindow(QMainWindow):
 Author: WXjzc
 
 1.使用SSH连接到Linux服务器
-2.软件会自动检测宝塔面板、小皮面板和1Panel，并从服务器下载文件进行分析
+2.软件会自动检测宝塔面板、小皮面板、1Panel和耗子面板，并从服务器下载文件进行分析
 3.分析结果以表格形式呈现，分析的内容仅为面板基础内容，不包含数据库、网站的重建与还原
 """
         )
@@ -124,7 +125,7 @@ Author: WXjzc
         # 填充表格内容
         for row in range(y):
             for col in range(x):
-                table.setItem(row, col, QTableWidgetItem(table_data[row][col]))
+                table.setItem(row, col, QTableWidgetItem(str(table_data[row][col])))
 
         # 设置表格的宽度自适应和最小宽度
         table.horizontalHeader().setStretchLastSection(True)
@@ -166,6 +167,9 @@ Author: WXjzc
         elif self.flag == 'one':
             self.get_onePanel_data()
             return self.onePanelData
+        elif self.flag == 'mouse':
+            self.get_mousePanel_data()
+            return self.mousePanelData
         else:
             show_message("提示","未检测出支持的面板！",QMessageBox.Icon.Information)
         return {}
@@ -198,10 +202,30 @@ Author: WXjzc
         elif panel == 'xp':
             self.flag = 'xp'
             self.path = serverHelper.download_xp()
+        elif panel == 'mouse':
+            self.flag = 'mouse'
+            self.path = serverHelper.download_mouse()
         elif panel == '连接失败':
             show_message("错误","无法连接至目标服务器，请确认连接配置，或\n查看服务器SSH服务是否正常，防火墙是否放行或关闭！")
             return None
         serverHelper.close()
+
+    def get_mousePanel_data(self):
+        mousePanel = MousePanel()
+        mousePanel.set_path(self.path)
+        mousePanel.connect()
+        self.mousePanelData.update({'用户':mousePanel.get_users()})
+        self.mousePanelData.update({'SSH连接':mousePanel.get_ssh()})
+        self.mousePanelData.update({'证书':mousePanel.get_certs()})
+        self.mousePanelData.update({'证书DNS':mousePanel.get_cert_dns()})
+        self.mousePanelData.update({'证书用户':mousePanel.get_cert_accounts()})
+        self.mousePanelData.update({'数据库用户':mousePanel.get_dbusers()})
+        self.mousePanelData.update({'数据库':mousePanel.get_databases()})
+        self.mousePanelData.update({'计划任务':mousePanel.get_crontab()})
+        self.mousePanelData.update({'面板任务':mousePanel.get_tasks()})
+        self.mousePanelData.update({'配置':mousePanel.get_config()})
+        self.mousePanelData.update({'站点':mousePanel.get_sites()})
+        pass
 
     def get_xpPanel_data(self):
         xpPanel = XpPanel()

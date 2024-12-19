@@ -1,5 +1,7 @@
+from typing import Union
 from Crypto.Cipher import AES
-from base64 import b64decode
+from Crypto.Cipher import ChaCha20_Poly1305
+from base64 import urlsafe_b64decode
 from Crypto.Util.Padding import unpad
 import subprocess
 import os
@@ -15,7 +17,7 @@ class DecHelper:
         @b64_pwd:   需要解密的内容，Base64格式
         """
         block_size = 16
-        byte_cipher = b64decode(b64_pwd)
+        byte_cipher = urlsafe_b64decode(b64_pwd)
         iv = byte_cipher[:block_size]
         cipher_pwd = byte_cipher[block_size:]
         aes = AES.new(key.encode('utf-8'),AES.MODE_CBC,iv)
@@ -29,7 +31,7 @@ class DecHelper:
         """
         key = 'Z2B87NEAS2BkxTrh'
         iv = 'WwadH66EGWpeeTT6'
-        byte_div = b64decode(div)
+        byte_div = urlsafe_b64decode(div)
         aes = AES.new(key.encode('utf-8'),AES.MODE_CBC,iv.encode('utf-8'))
         decrypted_data = aes.decrypt(byte_div)
         dec_div = unpad(decrypted_data, AES.block_size)
@@ -42,7 +44,7 @@ class DecHelper:
         """
         key = '3P+_lN3+jPW6Kgt#'
         iv = self.bt_div
-        byte_bt = b64decode(bt_str)
+        byte_bt = urlsafe_b64decode(bt_str)
         aes = AES.new(key.encode('utf-8'),AES.MODE_CBC,iv.encode('utf-8'))
         decrypted_data = aes.decrypt(byte_bt)
         dec_bt = unpad(decrypted_data, AES.block_size)
@@ -70,3 +72,15 @@ class DecHelper:
             print('解密成功')
             return 1
         return 0
+
+    def XChaCha20Poly1305Decrypt(self, key, ciphertext) -> Union[str, bytes]:
+        nonce_size = 24
+        over_head = 16
+        cipher_data = urlsafe_b64decode(ciphertext)
+        cipher = ChaCha20_Poly1305.new(key=key.encode(), nonce=cipher_data[:nonce_size])
+        plain_data = cipher.decrypt(cipher_data[nonce_size:])
+        try:
+            plain_data = plain_data[:-over_head].decode('utf8')
+        except UnicodeDecodeError:
+            plain_data = str(plain_data[:-over_head])
+        return plain_data
