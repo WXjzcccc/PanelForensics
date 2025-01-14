@@ -158,8 +158,8 @@ class ServerHelper:
         history = []
         for line in out.split('\n'):
             history.append(line)
-            ip = line.split('/')[-2]
             try:  # 由于不知道什么原因，某些服务器在没有搜索到文件时会出现错误
+                ip = line.split('/')[-2]
                 dic.update({f'{ip}_history.pl': self.get_file(line, f'{target_path}{ip}_history.pl')})
             except:
                 pass
